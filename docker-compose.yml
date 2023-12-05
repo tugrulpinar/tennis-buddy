@@ -1,11 +1,40 @@
 services:
+  tennisbuddy:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+    ports:
+    - 8000:8000
+    container_name: tennisbuddy
+    env_file:
+      - .env
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tennisbuddy
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    container_name: postgres
+
   redis:
     image: redis
     ports:
       - "127.0.0.1:6379:6379"
+    container_name: redis
+
   mailhog:
     image: mailhog/mailhog:latest
     restart: always
     ports:
       - 1025:1025
       - 8025:8025
+    container_name: mailhog
+
+volumes:
+  postgres_data:
