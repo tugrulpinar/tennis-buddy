@@ -142,7 +142,7 @@ sed -i 's/appname\./myapp\./g' `grep 'appname\.' -rl *`
 mv appname/ myapp/
 ```
 
-Alternatively, find and replace `appname.` with `myapp.` in all project files in your editor of choice. Then rename the `appname` folder with `myapp`.
+Alternatively, find and replace `tennisbuddy.` with `myapp.` in all project files in your editor of choice. Then rename the `appname` folder with `myapp`.
 
 ## Verify that everything works
 

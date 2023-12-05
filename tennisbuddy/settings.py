@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 env.read_env(os.path.join(BASE_DIR, ".env"))
 
-PROJECT_NAME = env.str("PROJECT_NAME", default="Sidewinder")
+PROJECT_NAME = env.str("PROJECT_NAME")
 
 DEBUG = env.bool("DJANGO_DEBUG")
 
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "huey.contrib.djhuey",
     "bx_django_utils",
     "huey_monitor",
-    "appname.core",
+    "tennisbuddy.core",
 ]
 
 if DEBUG:
@@ -80,7 +80,7 @@ if DEBUG:
     # as it can have unexpected behavior
     SILKY_ANALYZE_QUERIES = False
 
-ROOT_URLCONF = "appname.urls"
+ROOT_URLCONF = "tennisbuddy.urls"
 
 TEMPLATES = [
     {
@@ -93,13 +93,13 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "appname.core.context_processors.global_settings",
+                "tennisbuddy.core.context_processors.global_settings",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "appname.wsgi.application"
+WSGI_APPLICATION = "tennisbuddy.wsgi.application"
 
 # Database
 
@@ -168,7 +168,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "core.User"
 
-FORM_RENDERER = "appname.core.forms.CustomFormRenderer"
+FORM_RENDERER = "tennisbuddy.core.forms.CustomFormRenderer"
 
 # Static files
 
@@ -211,7 +211,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = env.str("ALLAUTH_ACCOUNT_EMAIL_SUBJECT_PREFIX")
 
 ACCOUNT_FORMS = {
     "login": "allauth.account.forms.LoginForm",
-    "signup": "appname.core.forms.AcceptTermsSignupForm",
+    "signup": "tennisbuddy.core.forms.AcceptTermsSignupForm",
     "add_email": "allauth.account.forms.AddEmailForm",
     "change_password": "allauth.account.forms.ChangePasswordForm",
     "set_password": "allauth.account.forms.SetPasswordForm",
@@ -294,7 +294,7 @@ if not HUEY_DEV and DEBUG:
 SHELL_PLUS = "ipython"
 SHELL_PLUS_PRINT_SQL = True
 SHELL_PLUS_IMPORTS = [
-    "from appname.core.services.email import EmailService",
+    "from tennisbuddy.core.services.email import EmailService",
 ]
 
 # Logging
