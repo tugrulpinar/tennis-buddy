@@ -16,6 +16,7 @@ DEBUG = env.bool("DJANGO_DEBUG")
 SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
+JAZZMIN_ADMIN_UI = env.bool("JAZZMIN_ADMIN_UI")
 
 # Application definition
 
@@ -44,6 +45,9 @@ INSTALLED_APPS = [
     "huey_monitor",
     "tennisbuddy.core",
 ]
+
+if JAZZMIN_ADMIN_UI:
+    INSTALLED_APPS.insert(0, "jazzmin")
 
 if DEBUG:
     INSTALLED_APPS += [
