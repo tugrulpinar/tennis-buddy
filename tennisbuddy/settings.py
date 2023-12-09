@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+    "django.contrib.gis",
     "django.contrib.flatpages",
     "django.forms",
     "django_extensions",
@@ -108,9 +109,14 @@ WSGI_APPLICATION = "tennisbuddy.wsgi.application"
 # Database
 
 DATABASES = {
-    "default": env.db_url(
-        "DJ_DATABASE_CONN_STRING", default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'
-    )
+    "default": {
+        "ENGINE": "django.contrib.gis.db.backends.postgis",
+        "NAME": "tennisbuddy",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "postgres",
+        "PORT": "5432",
+    }
 }
 CONN_MAX_AGE = None
 CONN_HEALTH_CHECKS = True
