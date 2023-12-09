@@ -23,7 +23,8 @@ urlpatterns = [
     path("accounts/settings/", views.user_settings, name="settings"),
     path("accounts/delete-account/", views.delete_account, name="delete_account"),
     # core
-    path("", views.index, name="index"),
+    path("", views.home, name="home"),
+    path("index", views.index, name="index"),
     path("terms/", views.terms, name="terms"),
     path("feedback/", views.feedback, name="feedback"),
 ]

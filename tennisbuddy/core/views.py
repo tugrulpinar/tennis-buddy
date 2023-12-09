@@ -1,9 +1,10 @@
 from allauth.account.views import LoginView as AllAuthLoginView
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
 
@@ -11,6 +12,20 @@ from .forms import UpdateAccountForm, UserFeedbackForm
 from .models import User
 
 
+def home(request):
+    users = User.objects.all()
+    search = ""
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        users = users.filter(username__contains=username)
+        search = username
+
+    context = {"users": users, "search": search}
+    return render(request, "home.html", context=context)
+
+
+@staff_member_required
 def index(request):
     return TemplateResponse(request, "core/index.html", {})
 
@@ -53,7 +68,7 @@ def delete_account(request):
     if request.method == "POST":
         user = request.user
         user.delete()
-    return redirect("index")
+    return redirect("home")
 
 
 class LoginView(AllAuthLoginView):
@@ -78,4 +93,4 @@ def login_as_user(request):
     login(request, as_user, backend)
 
     messages.success(request, _("Successfully signed in as ") + str(as_user))
-    return redirect("index")
+    return redirect("home")
