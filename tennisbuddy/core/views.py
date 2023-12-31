@@ -1,27 +1,44 @@
+import os
+
+import environ
+import googlemaps
 from allauth.account.views import LoginView as AllAuthLoginView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
 
 from .forms import UpdateAccountForm, UserFeedbackForm
-from .models import User
+from .models import Profile, User
+
+env = environ.Env()
+env.read_env(os.path.join(settings.BASE_DIR, ".env"))
+
+GOOGLE_MAPS_API_KEY = env.str("GOOGLE_MAPS_API_KEY")
+gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 
 
 def home(request):
-    users = User.objects.all()
+    profiles = Profile.objects.all()
     search = ""
 
     if request.method == "POST":
-        username = request.POST.get("username")
-        users = users.filter(username__contains=username)
-        search = username
+        location = request.POST.get("location")
+        geocode_result = gmaps.geocode(location)
+        coordinates = geocode_result[0]["geometry"]["location"]
+        search_point = Point(coordinates["lng"], coordinates["lat"], srid=4326)
+        profiles = profiles.annotate(
+            distance=Distance("location", search_point)
+        ).order_by("distance")
+        search = location
 
-    context = {"users": users, "search": search}
+    context = {"profiles": profiles, "search": search}
     return render(request, "home.html", context=context)
 
 

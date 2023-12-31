@@ -1,15 +1,25 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.gis import admin as gis_admin
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import Address, User, UserFeedback
+from .models import Profile, User, UserFeedback
 
 
-class AddressInline(admin.TabularInline):
-    model = Address
+@gis_admin.register(Profile)
+class ProfileAdmin(gis_admin.GISModelAdmin):
+    list_display = ["user", "gender", "experience_level"]
+    fields = [
+        "user",
+        "gender",
+        "experience_level",
+        "description",
+        "country",
+        "location",
+    ]
 
 
 class CustomUserAdmin(UserAdmin):
@@ -21,7 +31,6 @@ class CustomUserAdmin(UserAdmin):
         "username",
         "terms_accepted_at",
         "marketing_list_accepted",
-        "experience_level",
     ]
     readonly_fields = [
         "terms_accepted_at",
@@ -30,17 +39,13 @@ class CustomUserAdmin(UserAdmin):
         "last_login",
     ]
     list_display_links = ["email", "username"]
-    inlines = [AddressInline]
 
 
 CustomUserAdmin.fieldsets += (
-    ("Experience", {"fields": ("experience_level",)}),
     (
         "Sign up details",
         {"fields": ("terms_accepted_at", "marketing_list_accepted_at")},
     ),
-    ("Avatar", {"fields": ("avatar",)}),
-    ("Description", {"fields": ("description",)}),
 )
 
 admin.site.register(User, CustomUserAdmin)

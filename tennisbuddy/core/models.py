@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.gis.db import models
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 
@@ -13,6 +14,19 @@ class BaseModel(models.Model):
 
 
 class User(AbstractUser):
+    terms_accepted_at = models.DateTimeField(blank=True, null=True)
+    marketing_list_accepted_at = models.DateTimeField(blank=True, null=True)
+    avatar = models.ImageField(_("avatar"), blank=True, null=True, upload_to="avatars/")
+
+    @property
+    def marketing_list_accepted(self) -> bool:
+        return bool(self.marketing_list_accepted_at)
+
+    def __str__(self):
+        return self.username
+
+
+class Profile(models.Model):
     EXPERIENCE_LEVEL_CHOICES = [
         (1.0, 1.0),
         (1.5, 1.5),
@@ -29,35 +43,21 @@ class User(AbstractUser):
         ("M", "Male"),
         ("F", "Female"),
     ]
-    terms_accepted_at = models.DateTimeField(blank=True, null=True)
-    marketing_list_accepted_at = models.DateTimeField(blank=True, null=True)
-    avatar = models.ImageField(_("avatar"), blank=True, null=True, upload_to="avatars/")
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     gender = models.CharField(
         max_length=1, choices=GENDER_CHOICES, null=True, blank=True
     )
     experience_level = models.FloatField(choices=EXPERIENCE_LEVEL_CHOICES, default=1.0)
     description = models.TextField(max_length=1500, null=True, blank=True)
-
-    @property
-    def marketing_list_accepted(self) -> bool:
-        return bool(self.marketing_list_accepted_at)
+    country = models.CharField(max_length=255)
+    location = models.PointField(geography=True)
 
     def __str__(self):
-        return self.username
-
-
-class Address(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    country = models.CharField(max_length=255)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+        return self.user.username
 
     @property
     def coordinate(self) -> tuple:
-        return (self.latitude, self.longitude)
-
-    def __str__(self):
-        return f"{self.country} - {self.postal_code}"
+        return self.location.coords
 
 
 class UserFeedback(BaseModel):

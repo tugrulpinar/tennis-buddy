@@ -302,7 +302,7 @@ if not HUEY_DEV and DEBUG:
 # Shell plus from django-extensions
 
 SHELL_PLUS = "ipython"
-SHELL_PLUS_PRINT_SQL = True
+# SHELL_PLUS_PRINT_SQL = True
 SHELL_PLUS_IMPORTS = [
     "from tennisbuddy.core.services.email import EmailService",
 ]

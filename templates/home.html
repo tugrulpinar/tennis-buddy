@@ -7,12 +7,13 @@
 <form action="." method="post">
     {% csrf_token %}
     <label for="search">Search </label>
-    <input type="search" id="search" name="username" value="{{ search }}">
+    <input type="search" id="search" name="location" value="{{ search }}">
 </form>
 
 <ul>
-    {% for user in users %}
-    <li> {{user.username}} - {{user.experience_level}} </li>
+    {% for profile in profiles %}
+    <li> {{ profile.user.username }} | {{ profile.experience_level }} | {{ profile.coordinate }}
+        | {% if search %} {{ profile.distance.km|floatformat }} {% endif %} </li>
     {% endfor %}
 </ul>
 
