@@ -14,11 +14,17 @@ class ProfileAdmin(gis_admin.GISModelAdmin):
     list_display = ["user", "gender", "experience_level"]
     fields = [
         "user",
+        "created_at",
+        "updated_at",
         "gender",
         "experience_level",
         "description",
         "country",
         "location",
+    ]
+    readonly_fields = [
+        "created_at",
+        "updated_at",
     ]
 
 

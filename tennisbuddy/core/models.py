@@ -26,7 +26,7 @@ class User(AbstractUser):
         return self.username
 
 
-class Profile(models.Model):
+class Profile(BaseModel):
     EXPERIENCE_LEVEL_CHOICES = [
         (1.0, 1.0),
         (1.5, 1.5),
