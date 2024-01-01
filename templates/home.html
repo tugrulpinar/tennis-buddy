@@ -1,10 +1,9 @@
 {% extends "_base.html" %}
+{% load leaflet_tags %}
 
 {% block head %}
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+{% leaflet_js %}
+{% leaflet_css %}
 {% endblock %}
 
 {% block title %} Home {% endblock %}
@@ -26,7 +25,7 @@
 
 <br>
 
-<div id="map" style="height: 500px; width: 500px;"></div>
+<!-- {% leaflet_map "map" %} -->
 
 {{ tennis_courts|json_script:"tennis_courts" }}
 
@@ -34,18 +33,31 @@
 
 {% block script %}
 <script>
-    var map = L.map('map').setView([43.731739, -79.416332], 11);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-
-    let tennis_courts = JSON.parse(document.getElementById("tennis_courts").textContent)
-
-    tennis_courts.forEach(court => {
-        L.marker([court.latitude, court.longitude], { title: court.name, opacity: 0.8 }).addTo(map)
-    })
-
-
+    function map_init_basic(map, options) {
+        let tennis_courts = JSON.parse(document.getElementById("tennis_courts").textContent)
+        tennis_courts.forEach(court => {
+            L.marker([court.latitude, court.longitude], { title: court.name}).addTo(map)
+        })
+    }
 </script>
+
+<style>
+    .leaflet-container {
+        /* all maps */
+        width: 600px;
+        height: 400px;
+    }
+
+    #specialbigmap {
+        height: 800px;
+    }
+
+    /* Resize the "display_raw" textbox */
+    .django-leaflet-raw-textarea {
+        width: 100%;
+    }
+</style>
+
+{% leaflet_map "map" callback="window.map_init_basic" %}
+
 {% endblock %}

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "bx_django_utils",
     "huey_monitor",
     "tennisbuddy.core",
+    "leaflet",
 ]
 
 if JAZZMIN_ADMIN_UI:
@@ -463,3 +464,14 @@ if DEBUG:
     from rich.traceback import install as install_rich_traceback
 
     install_rich_traceback(show_locals=True)
+
+
+LEAFLET_CONFIG = {
+    # "SPATIAL_EXTENT": (5.0, 43.0, 7.5, -79),
+    "DEFAULT_CENTER": (43.731739, -79.416332),
+    "DEFAULT_ZOOM": 11,
+    "MIN_ZOOM": 9,
+    "MAX_ZOOM": 18,
+    "DEFAULT_PRECISION": 6,
+    "ATTRIBUTION_PREFIX": "TennisBuddy",
+}
