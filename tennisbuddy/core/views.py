@@ -15,7 +15,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext as _
 
 from .forms import UpdateAccountForm, UserFeedbackForm
-from .models import Profile, User
+from .models import Profile, TennisCourt, User
 
 env = environ.Env()
 env.read_env(os.path.join(settings.BASE_DIR, ".env"))
@@ -26,6 +26,7 @@ gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
 
 def home(request):
     profiles = Profile.objects.all()
+    tennis_courts = list(TennisCourt.objects.values())
     search = ""
 
     if request.method == "POST":
@@ -38,7 +39,7 @@ def home(request):
         ).order_by("distance")
         search = location
 
-    context = {"profiles": profiles, "search": search}
+    context = {"profiles": profiles, "tennis_courts": tennis_courts, "search": search}
     return render(request, "home.html", context=context)
 
 

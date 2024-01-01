@@ -6,7 +6,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 from .forms import UserChangeForm, UserCreationForm
-from .models import Profile, User, UserFeedback
+from .models import Profile, TennisCourt, User, UserFeedback
 
 
 @gis_admin.register(Profile)
@@ -55,6 +55,7 @@ CustomUserAdmin.fieldsets += (
 )
 
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(TennisCourt)
 admin.site.register(UserFeedback)
 
 admin_name = f"{settings.PROJECT_NAME} {_('Administration')}"

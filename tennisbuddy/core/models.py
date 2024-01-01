@@ -60,6 +60,16 @@ class Profile(BaseModel):
         return self.location.coords
 
 
+class TennisCourt(models.Model):
+    name = models.CharField(max_length=250)
+    address = models.CharField(max_length=500)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+
+    def __str__(self):
+        return self.name
+
+
 class UserFeedback(BaseModel):
     user = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
     email = models.EmailField(_("email"), blank=True)
