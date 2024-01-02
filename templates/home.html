@@ -25,8 +25,6 @@
 
 <br>
 
-<!-- {% leaflet_map "map" %} -->
-
 {{ tennis_courts|json_script:"tennis_courts" }}
 
 {% endblock %}
@@ -34,10 +32,40 @@
 {% block script %}
 <script>
     function map_init_basic(map, options) {
-        let tennis_courts = JSON.parse(document.getElementById("tennis_courts").textContent)
+        let tennis_courts = JSON.parse(document.getElementById("tennis_courts").textContent);
+        var myIcon = L.icon({
+            iconUrl: './static/images/tennis.svg',
+            iconSize: [38, 95],
+        });
+
         tennis_courts.forEach(court => {
-            L.marker([court.latitude, court.longitude], { title: court.name}).addTo(map)
-        })
+            L.marker([court.latitude, court.longitude], { title: court.name, icon: myIcon }).bindPopup(`
+                <p> ${court.name} </p><p>${court.address}</p>
+            `).addTo(map)
+        });
+
+        navigator.geolocation.getCurrentPosition(success, error);
+
+        function success(pos) {
+            console.log(pos.coords);
+            const circleRadius = 1300;
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const accuracy = pos.coords.accuracy;
+
+            L.marker([lat, lng]).addTo(map);
+            let circle = L.circle([lat, lng], { radius: circleRadius }).addTo(map);
+
+            map.fitBounds(circle.getBounds());
+        }
+
+        function error(err) {
+            if (err.code === 1) {
+                alert("Please allow geolocation access");
+            } else {
+                alert("Cannot get current location");
+            }
+        }
     }
 </script>
 
